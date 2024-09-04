@@ -9,10 +9,10 @@ CRED-1 can be broken down into the following steps:
 1. Send a DHCP Request for the PXE image over UDP 4011
 2. SCCM responds with image path and crypto keys to decrypt the referenced variables file
 
-At this stage, two files are downloaded over TFTP:
+At this stage, two files are downloaded over TFTP, for example:
 
-1. 
-2. 
+1. `2024.09.03.23.35.22.0001.{FEF9DEEE-4C4A-43EF-92BF-2DD23F3CE837}.boot.var`
+2. `2024.09.03.23.35.22.07.{FEF9DEEE-4C4A-43EF-92BF-2DD23F3CE837}.boot.bcd`
 
 Next CRED-1 takes the crypto keys also returned in the DHCP response, and takes one of two paths depending on the content:
 
