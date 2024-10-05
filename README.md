@@ -29,9 +29,13 @@ python ./main.py <target> <src_ip> <socks_host> <socks_port>
 Where:
 
 * Target - The SCCM PXE server IP
-* SRC_IP - The IP address of the host we are running the implant on
+* SRC_IP - The IP address of the compromised server we are running the implant on
 * SOCKS_HOST - The IP of the team server running SOCKS5
 * SOCKS_PORT - The SOCKS5 port
+
+To help visualise the components referenced in the arguments:
+
+![](./images/attack-overview.png)
 
 Note: Due to the way that SOCKS5 works, the C2 server will need to be accessible on all ports to Cred1py as a second ephemeral port is opened as part of the relaying of UDP traffic. Easiest method is usually to just run Cred1py on the C2 server and target `localhost`.. but you do you!
 
