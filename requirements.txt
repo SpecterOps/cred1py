@@ -1,0 +1,2 @@
+pycryptodome==3.21.0
+scapy==2.6.0
