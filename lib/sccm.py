@@ -7,7 +7,7 @@ import binascii
 from lib.socks import SOCKS5Client
 from Crypto.Cipher import AES,DES3
 
-## A lot of code here is taken from pxethiefy.py (we're just wrapping in SOCKS5), with thanks to the author!
+## Most of the code here is taken from pxethiefy.py (we're just wrapping in SOCKS5), with thanks to the author!
 ## https://github.com/csandker/pxethiefy/blob/main/pxethiefy.py
 
 class SCCM:
